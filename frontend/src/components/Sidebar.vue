@@ -5,11 +5,14 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
-                        Kullanıcı Adı
+                        {{username}}
                     </a>
                 </li>
                 <li v-bind:class="{}" v-for="item in lists" v-bind:key="item.id">
-                    <a href="#" v-on:click="showTasks(item.id)">{{item.title}}</a>
+                    <div class="btn-group">
+                        <a href="#" v-on:click="showTasks(item.id)">{{item.title}}</a>
+                        <a v-on:click="getPerms(item.id)" style="margin-left:10px;"><ListUpdate v-bind:title="item.title" v-bind:listid="item.id" /></a>
+                    </div>
                 </li>
                 <li>
                     <a href="#"><ListCreate /></a>
@@ -21,13 +24,15 @@
 
 <script>
 import ListCreate from '@/components/ListCreate.vue'
+import ListUpdate from '@/components/ListUpdate.vue'
 export default {
     components: {
-        ListCreate
+        ListCreate,
+        ListUpdate
     },
     data() {
         return { 
-        showModal: false
+        showModal: false,
         }
     },
     methods: {
@@ -36,12 +41,19 @@ export default {
         },
         showTasks: function(list_id) {
             this.$store.dispatch("getTasksByList", {list_id:list_id})
+        },
+        getPerms: function(list_id) {
+            this.$store.dispatch("getListPermissions", {list_id:list_id})
+            console.log(list_id)
         }
     },
     computed: {
         lists(){
             return this.$store.getters.userList
-        }
+        },
+        username() {
+            return this.$store.getters.getUsername
+        },
     }
 }
 </script>

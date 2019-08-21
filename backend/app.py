@@ -5,10 +5,12 @@ from flask_cors import CORS
 
 from db import db
 from blacklist import BLACKLIST
+from ma import ma
 from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
 from resources.list import TodoList, List, UserList 
 from resources.task import TaskList, Task, TaskByList
 from resources.taskdetail import TaskDetailList
+from resources.listpermission import ListPermission, Permissions
 
 
 app = Flask(__name__)
@@ -87,6 +89,10 @@ api.add_resource(UserLogout, '/logout')
 
 api.add_resource(TaskDetailList, '/taskdetails')
 
+api.add_resource(ListPermission, '/permissions/<int:list_id>')
+api.add_resource(Permissions, '/permissions')
+
 if __name__ == '__main__':
     db.init_app(app)
+    ma.init_app(app)
     app.run(port=5000, debug=True)

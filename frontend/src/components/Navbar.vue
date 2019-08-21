@@ -5,10 +5,7 @@
                 <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#" v-on:click="toggle"><i class="fas fa-bars fa-3x"></i></a>
-                </li>
-                <li class="nav-item">
-                    <input class="form-control mr-sm-2" type="search" aria-label="Search">
-                </li>    
+                </li>   
                 </ul>
             </div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">

@@ -1,6 +1,11 @@
 from flask_restful import Resource, reqparse
 from models.task import TaskModel
+from marshmallow import ValidationError
+from schemas.task import TaskSchema
+from flask import request
 
+
+task_schema = TaskSchema()
 
 class Task(Resource):
     parser = reqparse.RequestParser()
@@ -31,19 +36,18 @@ class Task(Resource):
         return{"message":"list not found"}   
 
 class TaskList(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('body', type=str, help='Cannot be blank!')
-    parser.add_argument('list_id', type=int, required=True, help="Every task needs a list_id." )
-
+  
     def post(self):
-        data = TaskList.parser.parse_args()
-        task = TaskModel(data['body'], data['list_id'])
+        try:
+            task = task_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400    
+
         try:
             task.save_to_db()
-
         except:
             return {'message':'error during saving'}, 500
-        return task.json(), 200
+        return task_schema.dump(task), 200
 
     def get(self):
         tasks = [task.json() for task in TaskModel.find_all()]

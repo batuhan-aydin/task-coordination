@@ -40,7 +40,7 @@ export default {
         return {
             showModal: false,
             title: '',
-            user_id: this.$store.state.user_id
+            user_id: this.$store.state.user.id
         }
     },
     methods: {

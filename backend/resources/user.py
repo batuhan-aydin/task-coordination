@@ -3,43 +3,51 @@ from models.user import UserModel
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity, jwt_required, get_raw_jwt
 from blacklist import BLACKLIST
+from marshmallow import ValidationError
+from schemas.user import UserSchema
+from schemas.list import ListSchema
+from flask import request, session
+from models.list import ListModel
+from models.listpermission import ListPermissionModel
+from schemas.listpermission import ListPermissionSchema
 
-_user_parser = reqparse.RequestParser()
-_user_parser.add_argument('username',
-                          type=str,
-                          required=True,
-                          help="This field cannot be blank."
-                          )
-_user_parser.add_argument('password',
-                          type=str,
-                          required=True,
-                          help="This field cannot be blank."
-)
+
+user_schema = UserSchema()
+user_schema_many = UserSchema(many=True)
+list_schema = ListSchema(many=True)
+perm_schema = ListPermissionSchema()
 
 class UserRegister(Resource):
 
     def post(self):
-        data = _user_parser.parse_args()
+        try:
+            user = user_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
 
-        if UserModel.find_by_username(data['username']):
+        if UserModel.find_by_username(user.username):
             return {"message": "A user with that username already exists"}, 400
-
-        user = UserModel(**data)
+   
         user.save_to_db()
-
-        return {"message": "User created successfully."}, 201
-
+        
+        thelist = ListModel("Gelen Kutusu")
+        thelist.save_to_db()
+        permission = ListPermissionModel(user.id, thelist.id)
+        
+        permission.save_to_db()
+        #return {"message": "User created successfully."}, 201
+        return perm_schema.dump(permission)
 
 class User(Resource):
     @classmethod
-    def get(cls, user_id):
+    def get(cls, user_id: int):
         user = UserModel.find_by_id(user_id)
         if not user:
             return {'message':'user not found'}, 404
-        return user.json()
+        return user_schema.dump(user)
 
     @classmethod
-    def delete(cls, user_id):
+    def delete(cls, user_id: int):
         user = UserModel.find_by_id(user_id)
         if not user:
             return{'message':'user not found'}, 404
@@ -50,16 +58,20 @@ class UserLogin(Resource):
 
     @classmethod                    
     def post(cls):
-        data = _user_parser.parse_args()  
-        user = UserModel.find_by_username(data['username'])
+        try:
+            user_data = user_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
 
-        if user and safe_str_cmp(user.password, data['password']):
+        user = UserModel.find_by_username(user_data.username)
+
+        if user and safe_str_cmp(user.password, user_data.password):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id) 
             return {
                 'access_token':access_token,
                 'refresh_token':refresh_token,
-                'user_id':user.id
+                'user':user_schema.dump(user)
             }, 200
         return {'message':'invalid credentials'}, 401       
 
@@ -77,4 +89,3 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token': new_token}, 200           
-

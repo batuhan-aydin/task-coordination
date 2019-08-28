@@ -1,4 +1,8 @@
 <template>
+ <div> 
+     <nav class="navbar navbar-light" style="background-color: blue;">
+        <a class="navbar-brand" href="#" style="color:white;">Task Coordination</a>
+    </nav>  
     <div id="register" class="container">
         <div class="row justify-content-center">
             <div class="col-6">
@@ -17,6 +21,7 @@
             </div>
         </div>
     </div>
+ </div>   
 </template>
 
 <script>

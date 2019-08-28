@@ -27,6 +27,12 @@ class ListPermissionModel(db.Model):
             'role':self.role
     }
 
+
+    @classmethod
+    def find_by_id(cls, list_id):
+        return cls.query.get(list_id)
+  
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

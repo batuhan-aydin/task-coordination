@@ -8,6 +8,7 @@ from schemas.list import ListSchema
 from schemas.user import UserSchema
 from schemas.listpermission import ListPermissionSchema
 from db import db
+from flask import jsonify
 
 list_schema = ListSchema()
 list_schema_many = ListSchema(many=True)
@@ -69,12 +70,14 @@ class TodoList(Resource):
 class UserList(Resource):
     def get(self, user_id):
         #user = UserModel.find_by_id(user_id)
-        lists = db.engine.execute("SELECT lists.id, lists.title FROM lists JOIN listpermissions ON lists.id == listpermissions.list_id WHERE listpermissions.user_id = :val", {'val':user_id})
-        print(lists)
+        #result = db.engine.execute("SELECT lists.id, lists.title, listpermissions.user_id FROM lists INNER JOIN listpermissions ON lists.id=listpermissions.list_id")
+        result = db.engine.execute("SELECT lists.id, lists.title, listpermissions.user_id FROM lists INNER JOIN listpermissions ON lists.id == listpermissions.list_id WHERE listpermissions.user_id = :val", {'val':user_id})
+        #print(lists)
         #print(user)
         #print(user.lists)
         #lists2 = user.lists
         #perms = ListPermissionModel.query.filter_by(user_id=user.id).all()
         #return list_schema.dump(user.lists)
         #items = [item.json() for item in user.list]
-        return list_schema_many.dump(lists)
+        return jsonify({'result': [dict(row) for row in result]})
+        #return list_schema_many.dump(lists)

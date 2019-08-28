@@ -27,9 +27,30 @@
                                 <input type="text" class="form-control" placeholder="Kullanıcı adı" v-model="username">
                                 <ul class="list-group">
                                     <li v-for="(item, index) in permissions" v-bind:key="index"  class="list-group-item">
-                                        <span v-if="item.role === 1">Sahip</span>
-                                        <span v-if="item.role === 2">Paylaşılan</span>
-                                        {{item.username}}
+                                        <!--
+                                        <div>
+                                            <span v-if="item.role === 1">Sahip</span>
+                                            <span v-if="item.role === 2">Paylaşılan</span>
+                                            {{item.username}}
+                                        </div>
+                                        -->
+                                        
+                                        <div v-if="item.role === 1">
+                                            Sahip {{item.username}}
+                                        </div>
+                                        <div v-if="item.role === 2">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                   Paylaşılan: {{item.username}}
+                                                </div>
+                                                <div class="col-3" v-if="user_id !== item.user_id">
+                                                    <a v-on:click="removePermission(item); getPerms(item.list_id); " ><i id="removePerm" class="fas fa-times fa-2x"></i></a>
+                                                </div>
+                                            </div>
+                                           
+                                        </div>
+            
+                                        
                                     </li>
                                 </ul>
                             </div>
@@ -46,7 +67,7 @@
             </transition>
         </div>
 
-        <button class="btn btn-primary" @click="showModal = true">Güncelle</button>
+        <button class="btn btn-primary" @click="showModal = true"><i class="fas fa-cog"></i></button>
     </div>
 </template>
 
@@ -65,11 +86,18 @@ export default {
             this.showModal = false
         },
         addUser() {
-            console.log(this.username)
             this.$store.dispatch("addListPermission", {list_id:this.listid, username:this.username})
+            this.username = ''
+            this.showModal = false
+        },
+        removePermission(item) {
+            this.$store.dispatch("removeListPermission", {permission_id:item.id})    
+        },
+        getPerms(list_id) {
+            this.$store.dispatch("getListPermissions", {list_id:this.listid})
         }
     },
-    props: ["title", "listid"],
+    props: ["title", "listid", "userid"],
     computed: {
         permissions() {
             return this.$store.getters.gettingListPermissions
@@ -94,5 +122,12 @@ export default {
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
+}
+
+#removePerm {
+    color: red;
+}
+#removePerm:hover {
+    transform: scale(1.5); 
 }
 </style>

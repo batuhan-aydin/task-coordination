@@ -1,4 +1,8 @@
 <template>
+<div>
+    <nav class="navbar navbar-light" style="background-color: green;">
+        <a class="navbar-brand" href="#" style="color:white;">Task Coordination</a>
+    </nav>
     <div id="login" class="container">
         <div class="row justify-content-center">
             <div class="col-6">
@@ -18,6 +22,7 @@
             </div>
         </div>
     </div>
+</div>    
 </template>
 
 <script>

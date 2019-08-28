@@ -19,7 +19,7 @@ class ListPermission(Resource):
     @classmethod
     def get(cls, list_id):
         print(list_id)
-        result = db.engine.execute("SELECT username, role FROM users INNER JOIN listpermissions ON listpermissions.user_id = users.id WHERE listpermissions.list_id = :val", {'val':list_id})
+        result = db.engine.execute("SELECT users.id, username, role, listpermissions.id, listpermissions.user_id FROM users INNER JOIN listpermissions ON listpermissions.user_id = users.id INNER JOIN lists ON lists.id = listpermissions.list_id WHERE listpermissions.list_id = :val", {'val':list_id})
         return jsonify({'result': [dict(row) for row in result]})
         #permissions = [perm.json() for perm in ListPermissionModel.find_all()]
         #return {'permissions':permissions}
@@ -39,6 +39,17 @@ class ListPermission(Resource):
             return {'message':'error during saving'}, 500 
             
         return perm.json(), 200
+
+    @classmethod
+    def delete(cls, list_id):
+        # Had to write list_id due to other function
+        # But it is actually permission_id
+        # It takes the id of pivot, and deletes it
+        perm = ListPermissionModel.find_by_id(list_id)
+        if perm:
+            perm.delete_from_db()
+            return {'message':'permission is deleted'}, 200
+        return {'message':'permission not found'}, 404    
 
 class Permissions(Resource):
     

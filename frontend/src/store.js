@@ -46,6 +46,9 @@ export default new Vuex.Store({
     },
     setListPermissions(state, perms) {
       state.perms = perms
+    },
+    clearListPermissions(state) {
+      state.perms = []
     }
   },
   actions: {
@@ -111,7 +114,7 @@ export default new Vuex.Store({
     getUserList({commit, dispatch}, data) {
       axios.get("http://127.0.0.1:5000/lists/" + this.state.user.id)
       .then(response => {
-        commit("setUserLists", response.data)
+        commit("setUserLists", response.data.result)
       }).catch(err => {
         console.log(err)
       })
@@ -165,6 +168,14 @@ export default new Vuex.Store({
         console.log(err)
       })
     },
+    removeListPermission({commit, dispatch}, data) {
+      axios.delete("http://127.0.0.1:5000/permissions/" + data.permission_id)
+      .then(response => {
+        console.log("permission removed")
+      }).catch(err => {
+        console.log(err)
+      })
+    }
   },
   getters: {
     isAuthenticated(state){
@@ -195,6 +206,9 @@ export default new Vuex.Store({
     },
     gettingListPermissions(state) {
       return state.perms
+    },
+    getUserID(state){
+      return state.user.id
     }
   }
 })

@@ -4,7 +4,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" v-on:click="toggle"><i class="fas fa-bars fa-3x"></i></a>
+                    <a class="nav-link" href="#" v-on:click="toggle"><i class="fas fa-bars"></i></a>
                 </li>   
                 </ul>
             </div>

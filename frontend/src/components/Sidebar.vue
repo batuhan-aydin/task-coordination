@@ -11,7 +11,7 @@
                 <li v-bind:class="{}" v-for="item in lists" v-bind:key="item.id">
                     <div class="btn-group">
                         <a href="#" v-on:click="showTasks(item.id)">{{item.title}}</a>
-                        <a v-on:click="getPerms(item.id)" style="margin-left:10px;"><ListUpdate v-bind:title="item.title" v-bind:listid="item.id" /></a>
+                        <a v-on:click="getPerms(item.id)"><ListUpdate v-bind:title="item.title" v-bind:listid="item.id" v-bind:userid="item.user_id" /></a>
                     </div>
                 </li>
                 <li>
@@ -44,7 +44,6 @@ export default {
         },
         getPerms: function(list_id) {
             this.$store.dispatch("getListPermissions", {list_id:list_id})
-            console.log(list_id)
         }
     },
     computed: {
@@ -127,7 +126,7 @@ export default {
 .sidebar-nav li a:hover {
     text-decoration: none;
     color:black;
-    background: gray;
+    
 }
 
 .sidebar-nav li a:active,

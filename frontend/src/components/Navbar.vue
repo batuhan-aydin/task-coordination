@@ -2,10 +2,16 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                
                 <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" v-on:click="toggle"><i class="fas fa-bars"></i></a>
-                </li>   
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" v-on:click="toggle"><i class="fas fa-bars"></i></a>
+                    </li> 
+                    <li class="nav-item" style="margin-left:55%;">
+                        <form class="form-inline my-2 my-lg-0" @submit.prevent="searchTask">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="width:400px;" v-model="searchText">
+                        </form>
+                    </li>  
                 </ul>
             </div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -30,7 +36,8 @@
         data() {
             return {
                 show: !this.$store.getters.isAuthenticated,
-                showOr: this.$store.getters.isAuthenticated
+                showOr: this.$store.getters.isAuthenticated,
+                searchText: ''
             }
         },
         methods: {
@@ -40,6 +47,9 @@
             },
             toggle() {
                 this.$store.dispatch("changeIsActive")
+            },
+            searchTask() {
+                console.log(this.searchTask)
             }
         }
     }

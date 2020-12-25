@@ -1,3 +1,5 @@
+<h3>The project is archived due to not planned to develop further more</h3>
+
 # task-coordination
 Flask + Vue application inspired from Wunderlist, people can coordinate on tasks together
 
@@ -14,8 +16,7 @@ For backend
 2- Check the requirements.txt then install all dependencies to your virtualenv
  pip install *package-name*
  
-3- In the backend, write python app.py
- If it gives error, read the error. Must be about packages
+3- In the backend, to the console python app.py
 
 For frontend
 
@@ -23,7 +24,3 @@ For frontend
 2- Then npm run serve
 
 Both of them must be working at the same time
-
-The app is simple prototype. Later in the frontend, gotta stop using localstorage. Also have a problem about vuex.
-
- 
